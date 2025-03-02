@@ -1,0 +1,6 @@
+data/
+scraper/__pycache__
+
+# Ignore SQLite database files
+*.db
+*.sqlite
