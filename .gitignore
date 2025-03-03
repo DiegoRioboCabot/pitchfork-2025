@@ -1,6 +1,7 @@
-data/
 scraper/__pycache__
 
 # Ignore SQLite database files
-*.db
-*.sqlite
+data/*.db
+data/*.db-shm
+data/*.db-wal
+data/*.sqlite
