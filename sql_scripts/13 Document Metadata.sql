@@ -1,13 +1,3 @@
--- Ensure metadata table exists
-CREATE TABLE IF NOT EXISTS metadata (
-    table_name TEXT,
-    column_name TEXT,
-    is_primary_key INTEGER,
-    is_foreign_key INTEGER,
-    description TEXT,
-    PRIMARY KEY (table_name, column_name)
-);
-
 -- 🎵 Albums Table
 INSERT INTO metadata VALUES ('albums', NULL, NULL, NULL, 'Album information retrieved from a single Pitchfork album review.');
 INSERT INTO metadata VALUES ('albums', 'album_id', 1, NULL, 'Primary key. Unique identifier for each album.');
