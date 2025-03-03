@@ -17,7 +17,7 @@
 ### 🔗 URL Mapping
 1. Scrapes **Pitchfork's sitemap** to extract the following types of URLs:
    - 📰 News (*'/news/'*)
-   - 🏆 Live Grammy coverage (*'/grammys/'*)
+   - 🏆 Live Grammy coverage (*'/live/'*)
    - 🎵 Album reviews (*'/reviews/albums/'*)
    - 🎧 Track reviews (*'/reviews/tracks/'*)
    - 🎬 Movie reviews (*'/thepitch/'*)
