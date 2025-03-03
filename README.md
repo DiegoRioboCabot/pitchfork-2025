@@ -199,7 +199,7 @@ erDiagram
 │ ├── 📄 **Scrape_Pitchfork.py** # Main script to execute scraping  
 ├── 📂 **data/** # Stores scraped SQLite database  
 ├── 📂 **sql_scripts/**  
-| ├── ...# SQL scripts to create the database **indexes**, **views** and **metadata**  
+│ ├── ...# SQL scripts to create the database **indexes**, **views** and **metadata**  
 └── 📄 README.md # Project documentation (this file) 
 
 ---
