@@ -38,13 +38,9 @@ This script uses **BeautifulSoup** & **JSON parsing** allowing to:
 * ❌ avoid unicode characters 
 * 🕵️ reveal ***hidden* data structures**.
 * 📒 Apply **data normalization techniques** to ensure minimal redundancy.
-
-### 🎵 Album Data Extraction
-- Avoids messy **Unicode character cleaning** by **extracting structured JSON data**.
-- Navigates **deeply nested JSON structures** to retrieve key data fields.
-
-### ✍️ Author Data Extraction
-- Retrieves **author roles & biography**.
+* 🎵 Album Data Extraction
+* ✍️ Author Data Extraction
+* Safely navigate **deeply nested JSON structures** to retrieve key data fields.
 
 ---
 
@@ -180,7 +176,6 @@ erDiagram
     urls ||--o{ scraping_events : logged_in
     author_types ||--o{ author_type_evolution : evolves_from
 ```
-
 
 ---
 
