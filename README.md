@@ -200,6 +200,7 @@ erDiagram
 ├── 📂 **data/** # Stores scraped SQLite database  
 ├── 📂 **sql_scripts/**  
 │ ├── ...# SQL scripts to create the database **indexes**, **views** and **metadata**  
+| ├── 📄 requirements.txt # Library-Dependencies to install through pip
 └── 📄 README.md # Project documentation (this file) 
 
 ---
