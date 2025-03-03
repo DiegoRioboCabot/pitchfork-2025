@@ -187,7 +187,8 @@ def scrape_authors_type(json_pl:Dict[str,Any]) -> List[Author_Type]:
             .title()            # Capitalize first letter of each word
             .replace(', Pitchfork', '')     # Some author types have it, shouldn't be there
             .replace('Pitchfork', '')       # Pichfork declared as an author type here and there, should be "None"
-            .strip())
+            .strip()
+            .replace('  ',' '))
         
         return t if t else None
 
