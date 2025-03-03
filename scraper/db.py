@@ -37,7 +37,9 @@ DB_TABLES = {
     'review_keywords' : '(review_id TEXT, keyword_id INTEGER, score REAL)',
     'review_entities' : '(review_id TEXT, entity_id INTEGER, score REAL)',
     'review_artist_genres' : '(review_id TEXT, artist_id INTEGER, genre_id INTEGER)',
-    'scraping_events': '(timestamp TEXT, url_id INTEGER, process TEXT, success INTEGER, message TEXT)',}
+    'scraping_events': '(timestamp TEXT, url_id INTEGER, process TEXT, success INTEGER, message TEXT)',
+    'metadata' : '(table_name TEXT, column_name TEXT, is_primary_key INTEGER, is_foreign_key INTEGER, description TEXT)',}
+
 
 def __reset_tables(get_connection: SQLite3ConnectionGenerator, tables: Dict[str, str]) -> None:
     """
@@ -161,7 +163,8 @@ def __create_indexes(get_connection:SQLite3ConnectionGenerator) -> None:
         ("idx_review_entities", "review_entities", "review_id, entity_id"),
         ("idx_review_labels", "review_labels", "review_id, label_id"),
         ("idx_reviews", "reviews", "review_id"),
-        ("idx_scraping_events", "scraping_events", "timestamp"),]
+        ("idx_scraping_events", "scraping_events", "timestamp"),
+        ("idx_metadata", "table_name", "column_name")]
 
     for index in index_list:
         __create_index_if_missing(get_connection, *index)
