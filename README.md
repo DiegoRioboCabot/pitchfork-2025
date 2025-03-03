@@ -167,16 +167,16 @@ erDiagram
         TEXT message}
 
     %% Relationships
-    albums ||--o{ review_albums : contains
-    labels ||--o{ review_labels : associated_with
-    artists ||--o{ review_artists : performed_by
-    authors ||--o{ review_authors : written_by
-    keywords ||--o{ review_keywords : contains
-    entities ||--o{ review_entities : references
-    genres ||--o{ review_artist_genres : categorized_as
-    urls ||--o{ reviews : published_on
-    urls ||--o{ artists : linked_to
-    urls ||--o{ authors : linked_to
+    albums ||--o{ review_albums : appears_in
+    labels ||--o{ review_labels : appears_in
+    artists ||--o{ review_artists : appears_in
+    authors ||--o{ review_authors : appears_in
+    keywords ||--o{ review_keywords : appears_in
+    entities ||--o{ review_entities : appears_in
+    genres ||--o{ review_artist_genres : appears_in
+    urls ||--o{ reviews : links_to
+    urls ||--o{ artists : links_to
+    urls ||--o{ authors : links_to
     urls ||--o{ scraping_events : logged_in
     author_types ||--o{ author_type_evolution : evolves_from
 ```
