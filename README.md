@@ -53,7 +53,9 @@ This script uses **BeautifulSoup** & **JSON parsing** allowing to:
 - **⚡ Optimized with indexes & foreign keys** for fast queries.
 - **📊 SQL Views** allow users to start analyzing data **without writing complex SQL**.
 
-### **📂 Database Schema
+### 📂 Database Schema
+
+<div style ="width: 100%; overflow-x: auto">
 ```mermaid
 erDiagram
     entities {
@@ -180,6 +182,7 @@ erDiagram
     author_types ||--o{ author_type_evolution : evolves_from
 
 ```
+</div/>
 
 ---
 
