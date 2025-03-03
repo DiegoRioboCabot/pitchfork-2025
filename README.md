@@ -39,7 +39,7 @@ This script uses **BeautifulSoup** & **JSON parsing** allowing to:
 * 🕵️ reveal ***hidden* data structures**.
 * 📒 Apply **data normalization techniques** to ensure minimal redundancy.
 
-### **🎵 Album Data Extraction
+### 🎵 Album Data Extraction
 - Avoids messy **Unicode character cleaning** by **extracting structured JSON data**.
 - Navigates **deeply nested JSON structures** to retrieve key data fields.
 
