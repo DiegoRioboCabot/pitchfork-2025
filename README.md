@@ -182,7 +182,7 @@ erDiagram
     author_types ||--o{ author_type_evolution : evolves_from
 
 ```
-</div/>
+</div>
 
 ---
 
