@@ -25,8 +25,8 @@
    - 🎥 Videos (*'/tv/'*)
    
 2. Scrapes **album review pages** to extract:
-   - 🎤 *Artists* (Links to their dedicated pages)
-   - ✍️ *Authors* (Links to their bio pages)
+   - 🎤 *Artists* (*'/artists/'*) urls
+   - ✍️ *Authors* (*'/staff/'*  bio pages) urls
 
 3. Scrapes **author pages** for **detailed author metadata**.
 
