@@ -55,7 +55,6 @@ This script uses **BeautifulSoup** & **JSON parsing** allowing to:
 
 ### 📂 Database Schema
 
-<div style ="width: 100%; overflow-x: auto">
 ```mermaid
 erDiagram
     entities {
@@ -180,9 +179,8 @@ erDiagram
     urls ||--o{ authors : linked_to
     urls ||--o{ scraping_events : logged_in
     author_types ||--o{ author_type_evolution : evolves_from
-
 ```
-</div>
+
 
 ---
 
