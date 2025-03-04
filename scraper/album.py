@@ -252,7 +252,7 @@ def scrape_authors_data(json_pl:Dict[str,Any]) -> Tuple[List[Author], List[Label
 
     for i, author_id in enumerate(authors_info1):
         review_authors.append(Review_Authors(review_id, author_id))
-        author_url = f'http://pitchfork.com{authors_info2[i]["url"]}'
+        author_url = f'https://pitchfork.com{authors_info2[i]["url"]}'
         
         is_new_url, url_id = general.get_url_id(author_url, return_isnew=True)
         if is_new_url:
@@ -438,7 +438,7 @@ def scrape_artists_data(json_pl:Dict[str,Any]
             else:
                 artist_id = g.artists_dict[artist_name]
 
-        artist_url = f'http://pitchfork.com/{a["uri"]}'
+        artist_url = f'https://pitchfork.com/{a["uri"]}'
         is_new_url, url_id = general.get_url_id(artist_url, return_isnew=True)
         if is_new_url:
             new_urls.append(URL(url_id, artist_url, None, None, None, 0, 0, 0, 1))
