@@ -1,5 +1,5 @@
 scraper/__pycache__
-
+sandbox/
 # Ignore SQLite database files
 data/*.db
 data/*.db-shm
