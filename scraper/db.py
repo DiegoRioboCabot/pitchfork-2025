@@ -164,7 +164,7 @@ def __create_indexes(get_connection:SQLite3ConnectionGenerator) -> None:
         ("idx_review_labels", "review_labels", "review_id, label_id"),
         ("idx_reviews", "reviews", "review_id"),
         ("idx_scraping_events", "scraping_events", "timestamp"),
-        ("idx_metadata", "table_name", "column_name")]
+        ("idx_metadata", "metadata", "table_name, column_name")]
 
     for index in index_list:
         __create_index_if_missing(get_connection, *index)
