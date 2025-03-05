@@ -1,7 +1,11 @@
 scraper/__pycache__
+merger/__pycache__
 sandbox/
+
 # Ignore SQLite database files
 data/*.db
 data/*.db-shm
 data/*.db-wal
 data/*.sqlite
+data/2022_reviews/*
+data/2022_reviews/
