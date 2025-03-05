@@ -251,15 +251,21 @@ def scrape_authors_data(json_pl:Dict[str,Any]) -> Tuple[List[Author], List[Label
     authors_info2 = general.dict_lookup(json_pl, ['review', 'contributors', 'author', 'items'])
 
     for i, author_id in enumerate(authors_info1):
-        review_authors.append(Review_Authors(review_id, author_id))
-        author_url = f'https://pitchfork.com{authors_info2[i]["url"]}'
         
-        is_new_url, url_id = general.get_url_id(author_url, return_isnew=True)
-        if is_new_url:
-            new_urls.append(URL(url_id, author_url,None, None, None, 0, 0, 1, 0))
+        # For some articles, Pitchfork has given "no author" an ID.
+        # With this, I reset it to 0, which was my original intention.
+        if author_id == '592604b17fd06e5349102f34': 
+            author_id = 0 
+        else:
+            author_url = f'https://pitchfork.com{authors_info2[i]["url"]}'
+            is_new_url, url_id = general.get_url_id(author_url, return_isnew=True)
+            if is_new_url:
+                new_urls.append(URL(url_id, author_url,None, None, None, 0, 0, 1, 0))
 
-        with g.authors_lock:  # 🔒 Protect `authors_set` access
+        review_authors.append(Review_Authors(review_id, author_id))
+        with g.authors_lock:
             if author_id not in g.authors_set:
+                
                 g.authors_set.add(author_id)
                 new_authors.append(Author(author_id, authors_info2[i]['name'], url_id))
 
@@ -512,7 +518,7 @@ def scrape_entities_data(json_pl:Dict[str,Any]) -> Tuple[List[Entity], List[Revi
         entity = item['name']
         score = item['score']
 
-        with g.entities_lock: # 🔒 Lock to safely modify `entities_dict`
+        with g.entities_lock:
             if entity not in g.entities_dict:
                 entity_id = g.entities_id_counter
                 g.entities_dict[entity] = entity_id
@@ -570,7 +576,7 @@ def scrape_keywords_data(json_pl:Dict[str,Any]) -> Tuple[List[Keyword], List[Rev
         keyword = item['keyword']
         score = item['score']
 
-        with g.keywords_lock: # 🔒 Lock to safely modify `keywords_dict`
+        with g.keywords_lock:
             if keyword not in g.keywords_dict:
                 keyword_id = g.keywords_id_counter
                 g.keywords_dict[keyword] = keyword_id
