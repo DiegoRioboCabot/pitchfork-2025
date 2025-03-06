@@ -252,22 +252,22 @@ def scrape_authors_data(json_pl:Dict[str,Any]) -> Tuple[List[Author], List[Label
 
     for i, author_id in enumerate(authors_info1):
         
-        # For some articles, Pitchfork has given "no author" an ID.
-        # With this, I reset it to 0, which was my original intention.
-        if author_id == '592604b17fd06e5349102f34': 
-            author_id = 0 
-        else:
-            author_url = f'https://pitchfork.com{authors_info2[i]["url"]}'
-            is_new_url, url_id = general.get_url_id(author_url, return_isnew=True)
-            if is_new_url:
-                new_urls.append(URL(url_id, author_url,None, None, None, 0, 0, 1, 0))
+        author_url = f'https://pitchfork.com{authors_info2[i]["url"]}'
+        is_new_url, url_id = general.get_url_id(author_url, return_isnew=True)
+        if is_new_url:
+            new_urls.append(URL(url_id, author_url,None, None, None, 0, 0, 1, 0))
 
         review_authors.append(Review_Authors(review_id, author_id))
         with g.authors_lock:
             if author_id not in g.authors_set:
-                
                 g.authors_set.add(author_id)
-                new_authors.append(Author(author_id, authors_info2[i]['name'], url_id))
+                author_name = authors_info2[i]['name']
+
+                # For some articles, Pitchfork has given "no author" an ID.
+                # I don't know if that's relevant or not (yet). But I might as well track it
+                if author_id == '592604b17fd06e5349102f34':
+                    author_name = 'Pitchfork_withID'
+                new_authors.append(Author(author_id, author_name, url_id))
 
     return new_authors, new_urls, review_authors
 

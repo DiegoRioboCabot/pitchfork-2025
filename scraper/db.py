@@ -193,7 +193,7 @@ def __create_null_types(get_connection:SQLite3ConnectionGenerator) -> None:
     n = (0,None)
     null_types = [
         Label(*n), Genre(*n), Keyword(*n), Entity(*n), Artist(*n, None), Author_Type(*n), 
-        Author(0, 'Pitchfork', None), 
+        Author(0, 'Pitchfork_noID', None), 
         URL(0, None, None, None, None, None, None, None, None)]
     insert_named_tuples(get_connection, null_types, log=True)
 
