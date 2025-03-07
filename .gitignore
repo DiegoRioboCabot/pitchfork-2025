@@ -1,6 +1,9 @@
-scraper/__pycache__
-merger/__pycache__
 sandbox/
+scraper/__pycache__
+mergers/__pycache__
+mergers/merger_2018/__pycache__
+mergers/merger_2022/__pycache__
+
 
 # Ignore SQLite database files
 data/*.db
