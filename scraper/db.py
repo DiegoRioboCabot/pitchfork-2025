@@ -193,7 +193,10 @@ def __create_null_types(get_connection:SQLite3ConnectionGenerator) -> None:
     n = (0,None)
     null_types = [
         Label(*n), Genre(*n), Keyword(*n), Entity(*n), Artist(*n, None), Author_Type(*n), 
-        Author(0, 'Pitchfork_noID', None), 
+        # For some articles, Pitchfork has given "no author" an ID.
+        # I don't know if that's relevant or not (yet). But I might as well track it
+        Author(0, 'Pitchfork_no_id', None), 
+        Author('592604b17fd06e5349102f34', 'Pitchfork_with_id', None), 
         URL(0, None, None, None, None, None, None, None, None)]
     insert_named_tuples(get_connection, null_types, log=True)
 

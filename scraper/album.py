@@ -263,11 +263,6 @@ def scrape_authors_data(json_pl:Dict[str,Any]) -> Tuple[List[Author], List[Label
                 g.authors_set.add(author_id)
                 author_name = authors_info2[i]['name']
                 author_name = author_name if not author_name else (author_name.strip().replace('  ',' '))
-
-                # For some articles, Pitchfork has given "no author" an ID.
-                # I don't know if that's relevant or not (yet). But I might as well track it
-                if author_id == '592604b17fd06e5349102f34':
-                    author_name = 'Pitchfork_withID'
                 new_authors.append(Author(author_id, author_name, url_id))
 
     return new_authors, new_urls, review_authors

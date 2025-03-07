@@ -5,7 +5,9 @@ import threading
 albums_set = set()
 albums_lock = threading.Lock()
 
-authors_set = set([0])
+# For some articles, Pitchfork has given "no author" an ID.
+# I don't know if that's relevant or not (yet). But I might as well track it
+authors_set = set([0, '592604b17fd06e5349102f34'])
 authors_lock = threading.Lock()
 
 urls_dict = {None: 0}
