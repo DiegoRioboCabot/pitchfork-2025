@@ -14,7 +14,6 @@ functions = [
     'initialize_database', 'execute_command', 'execute_script', 
     'insert_named_tuple', 'insert_named_tuples', 'log_event']
 
-
 __all__ = functions
 
 DB_TABLES = {
@@ -242,6 +241,14 @@ def __initialize_globals(get_connection:SQLite3ConnectionGenerator) -> None:
         g.entities_dict = pd.read_sql("SELECT entity_id, entity FROM entities", con, index_col='entity')['entity_id'].to_dict()
         g.author_types_dict = pd.read_sql("SELECT author_type_id, author_type FROM author_types", con, index_col='author_type')['author_type_id'].to_dict()
 
+        g.urls_id_counter = max(g.urls_dict.values()) + 1
+        g.artists_id_counter = max(g.artists_dict.values()) + 1
+        g.labels_id_counter = max(g.labels_dict.values()) + 1
+        g.genres_id_counter = max(g.genres_dict.values()) + 1
+        g.keywords_id_counter = max(g.keywords_dict.values()) + 1
+        g.entities_id_counter = max(g.entities_dict.values()) + 1
+        g.author_types_id_counter = max(g.author_types_dict.values()) + 1
+
 def __check_filepath(filepath: Union[str, Path, None] = None) -> Path:
     """
     Ensures that the given file path exists, creating necessary directories if missing.
@@ -262,7 +269,12 @@ def __check_filepath(filepath: Union[str, Path, None] = None) -> Path:
     if filepath is None:
         return Path.cwd()
     
-    filepath = Path.cwd() / filepath
+    if isinstance(filepath, str):
+        filepath = Path(filepath)
+        
+    if not filepath.is_absolute():
+        filepath = Path.cwd() / filepath
+    
     if not filepath.exists():
         filepath.mkdir(parents=True, exist_ok=True)
 
@@ -371,7 +383,8 @@ def execute_command(
     get_connection: SQLite3ConnectionGenerator, 
     cmd: str, 
     row: Optional[DatabaseRow] = None, 
-    delay: float = 0.2) -> None:
+    delay: float = 0.2,
+    verbose:bool = False) -> None:
     """
     This function runs an SQL command using an SQLite connection, optionally 
     with a database row for parameterized queries. If execution fails, it 
@@ -411,8 +424,15 @@ def execute_command(
             try:
                 cur = con.cursor()
                 if row is None:
+                    if verbose:
+                        print(f'About to insert:')
+                        print(f'\t{cmd}')
                     cur.execute(cmd)
                 else:
+                    if verbose:
+                        print(f'About to insert:')
+                        print(f'\t{cmd}')
+                        print(f'\t{row}')
                     cur.execute(cmd, row)
                 con.commit()
                 return
@@ -422,7 +442,8 @@ def execute_command(
 def insert_named_tuple(
     get_connection: SQLite3ConnectionGenerator, 
     row: Optional[DatabaseRow], 
-    log: bool = True) -> None:
+    log: bool = True,
+    verbose:bool = False) -> None:
     """
     Inserts a namedtuple record into the corresponding database table.
 
@@ -463,9 +484,8 @@ def insert_named_tuple(
     field_placeholders = ', '.join(['?'] * len(fields))  # Create parameterized placeholders
 
     insert_cmd = f"INSERT INTO {table} ({', '.join(fields)}) VALUES ({field_placeholders});"
-
     try:
-        execute_command(get_connection, insert_cmd, tuple(row))  # Execute insertion
+        execute_command(get_connection, insert_cmd, tuple(row), verbose=verbose)
     except sqlite3.DatabaseError:
         if log:
             message = traceback.format_exc()
@@ -478,7 +498,8 @@ def insert_named_tuple(
 def insert_named_tuples(
     get_connection: SQLite3ConnectionGenerator, 
     rows: List[Optional[DatabaseRow]], 
-    log: bool = True) -> None:
+    log: bool = True,
+    verbose:bool=False) -> None:
     """
     This function iterates over a list of namedtuple rows and inserts them into the database
     using `insert_named_tuple`. It skips `None` values and logs failures if `log=True`.
@@ -510,7 +531,7 @@ def insert_named_tuples(
     """
     for row in rows:
         if row is not None:
-            insert_named_tuple(get_connection, row, log=log)
+            insert_named_tuple(get_connection, row, log=log, verbose=verbose)
         
 def log_event(get_connection: SQLite3ConnectionGenerator, **kwargs: Any) -> None:
     """
