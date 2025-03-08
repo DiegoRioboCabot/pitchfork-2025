@@ -160,7 +160,7 @@ def scrape_authors_type(json_pl:Dict[str,Any]) -> List[Author_Type]:
         - If **no valid title is found**, an **empty list is returned**.
         - Uses **two JSON paths** (`["transformed", "contributor", "header", "title"]`, 
           `["transformed", "content4d", "title"]`) to maximize retrieval success.
-        - Uses **`g.author_types_lock`** to ensure **thread safety**.
+        - Uses **`g.lock`** to ensure **thread safety**.
         - **Filters out anomalous types** (e.g., long strings, irrelevant data).
     """
     def reformat_author_type(t: Optional[str]) -> Optional[str]:
@@ -255,13 +255,14 @@ def scrape_authors_type(json_pl:Dict[str,Any]) -> List[Author_Type]:
     author_types = []
 
     for author_type in ats:
-        is_new_author_type = author_type not in g.author_types_dict
-        if is_new_author_type:
-            g.author_types_dict[author_type] = g.author_types_id_counter
-            g.author_types_id_counter += 1
+        with g.lock:
+            is_new_author_type = author_type not in g.author_types_dict
+            if is_new_author_type:
+                g.author_types_dict[author_type] = g.author_types_id_counter
+                g.author_types_id_counter += 1
 
-        author_type_id = g.author_types_dict[author_type]
-        author_types.append((is_new_author_type, Author_Type(author_type_id, author_type)))
+            author_type_id = g.author_types_dict[author_type]
+            author_types.append((is_new_author_type, Author_Type(author_type_id, author_type)))
 
     return author_types
 

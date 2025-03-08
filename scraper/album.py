@@ -158,7 +158,7 @@ def scrape_review_data(
         ```
 
     Notes:
-        - **Thread safety**: Uses `g.labels_lock` to prevent race conditions when modifying `g.labels_dict`.
+        - **Thread safety**: Uses `g.lock` to prevent race conditions when modifying `g.labels_dict`.
         - If the label field is missing, it defaults to `[None]`.
         - The `datePublished` and `dateModified` fields are parsed into ISO 8601 format.
         - The function **does not modify the database** directly; it returns processed data.
@@ -190,7 +190,7 @@ def scrape_review_data(
     new_labels = []
     review_labels = []
     for label in labels:
-        with g.labels_lock:  # 🔒 Ensure only one thread modifies `g.labels_dict`
+        with g.lock:  # 🔒 Ensure only one thread modifies `g.labels_dict`
             if label not in g.labels_dict:
                 label_id = g.labels_id_counter
                 g.labels_dict[label] = label_id
@@ -234,7 +234,7 @@ def scrape_authors_data(json_pl:Dict[str,Any]) -> Tuple[List[Author], List[Label
 
     Notes:
         - If **no authors are found**, it assigns `author_id=0` and returns early.
-        - Uses **`g.authors_lock`** to ensure **thread safety** when modifying `g.authors_set`.
+        - Uses **`g.lock`** to ensure **thread safety** when modifying `g.authors_set`.
         - The function **does not modify the database directly**; it returns structured data.
     """
     new_urls = []
@@ -258,7 +258,7 @@ def scrape_authors_data(json_pl:Dict[str,Any]) -> Tuple[List[Author], List[Label
             new_urls.append(URL(url_id, author_url,None, None, None, 0, 0, 1, 0))
 
         review_authors.append(Review_Authors(review_id, author_id))
-        with g.authors_lock:
+        with g.lock:
             if author_id not in g.authors_set:
                 g.authors_set.add(author_id)
                 author_name = authors_info2[i]['name']
@@ -353,7 +353,7 @@ def scrape_albums_data(json_pl:Dict[str,Any]) -> Tuple[List[Album], List[Review_
 
     Notes:
         - If **no albums are found**, the function returns empty lists.
-        - Uses **`g.albums_lock`** to ensure **thread safety** when modifying `g.albums_set`.
+        - Uses **`g.lock`** to ensure **thread safety** when modifying `g.albums_set`.
         - The function delegates album object creation to `__create_album_object()`.
     """
     review_id = general.dict_lookup(json_pl, ['coreDataLayer', 'content', 'contentId'])
@@ -369,7 +369,7 @@ def scrape_albums_data(json_pl:Dict[str,Any]) -> Tuple[List[Album], List[Review_
 
         review_albums.append(Review_Albums(review_id, album_id))
         
-        with g.albums_lock:
+        with g.lock:
             if album_id not in g.albums_set:
 
                 g.albums_set.add(album_id)
@@ -411,7 +411,7 @@ def scrape_artists_data(json_pl:Dict[str,Any]
 
     Notes:
         - If **no artists are found**, the function returns empty lists.
-        - Uses **`g.artists_lock`** and **`g.genres_lock`** to ensure **thread safety**.
+        - Uses **`g.lock`** and **`g.lock`** to ensure **thread safety**.
         - The function **does not modify the database directly**; it returns structured data.
 
     Raises:
@@ -432,7 +432,7 @@ def scrape_artists_data(json_pl:Dict[str,Any]
     for a in artists:
         artist_name = a['name']
 
-        with g.artists_lock:
+        with g.lock:
             if artist_name not in g.artists_dict:
                 artist_id = g.artists_id_counter
                 g.artists_dict[artist_name] = artist_id
@@ -451,7 +451,7 @@ def scrape_artists_data(json_pl:Dict[str,Any]
         for gen in a['genres']:
             genre = gen['node']['name']
 
-            with g.genres_lock:
+            with g.lock:
                 if genre not in g.genres_dict:
                     genre_id = g.genres_id_counter
                     g.genres_dict[genre] = genre_id
@@ -495,7 +495,7 @@ def scrape_entities_data(json_pl:Dict[str,Any]) -> Tuple[List[Entity], List[Revi
     Notes:
         - If **no entities are found**, the function returns an empty list for `new_entities`
           and a default `Review_Entities(review_id, entity_id=0, score=None)`.
-        - Uses **`g.entities_lock`** to ensure **thread safety** when modifying `g.entities_dict`.
+        - Uses **`g.lock`** to ensure **thread safety** when modifying `g.entities_dict`.
         - The function **does not modify the database directly**; it returns structured data.
 
     Raises:
@@ -514,7 +514,7 @@ def scrape_entities_data(json_pl:Dict[str,Any]) -> Tuple[List[Entity], List[Revi
         entity = item['name']
         score = item['score']
 
-        with g.entities_lock:
+        with g.lock:
             if entity not in g.entities_dict:
                 entity_id = g.entities_id_counter
                 g.entities_dict[entity] = entity_id
@@ -557,7 +557,7 @@ def scrape_keywords_data(json_pl:Dict[str,Any]) -> Tuple[List[Keyword], List[Rev
     Notes:
         - If **no keywords are found**, the function returns an empty list for `new_keywords`
           and a default `Review_Keywords(review_id, keyword_id=0, score=None)`.
-        - Uses **`g.keywords_lock`** to ensure **thread safety** when modifying `g.keywords_dict`.
+        - Uses **`g.lock`** to ensure **thread safety** when modifying `g.keywords_dict`.
         - The function **does not modify the database directly**; it returns structured data.
     """
     review_id = general.dict_lookup(json_pl, ['coreDataLayer', 'content', 'contentId'])
@@ -572,7 +572,7 @@ def scrape_keywords_data(json_pl:Dict[str,Any]) -> Tuple[List[Keyword], List[Rev
         keyword = item['keyword']
         score = item['score']
 
-        with g.keywords_lock:
+        with g.lock:
             if keyword not in g.keywords_dict:
                 keyword_id = g.keywords_id_counter
                 g.keywords_dict[keyword] = keyword_id
@@ -656,7 +656,8 @@ def scrape_section(
     url_id: int, 
     section: str, 
     func: Callable[..., Tuple[Any, ...]], 
-    *inputs: Tuple[Dict[str, Any]]
+    *inputs: Tuple[Dict[str, Any]],
+    verbose:bool = False
     ) -> None:
     """
     Executes a scraping function for a specific section and inserts the extracted data into the database.
@@ -709,12 +710,12 @@ def scrape_section(
 
     for list_of_tuples in list_of_lists:
         try:
-            db.insert_named_tuples(get_connection, list_of_tuples)
+            db.insert_named_tuples(get_connection, list_of_tuples, verbose=verbose)
         except:
             message = traceback.format_exc()
             db.log_event(get_connection, url_id=url_id, process=f'Failed at inserting {section} data', success=0, message=message)
 
-def scrape_album_review(get_connection:SQLite3ConnectionGenerator, url_id:int, url:str, timeout:float=0.5) -> None:
+def scrape_album_review(get_connection:SQLite3ConnectionGenerator, url_id:int, url:str, timeout:float=0.5, verbose:bool = False) -> None:
     """
     This function extracts JSON metadata from the provided `url`, then 
     processes various sections of the review, including **albums, authors, 
@@ -767,4 +768,4 @@ def scrape_album_review(get_connection:SQLite3ConnectionGenerator, url_id:int, u
 
     for section, func in sections.items():
         inputs = (json_preload,) if section != 'review' else (json_preload, json_linked_data)
-        scrape_section(get_connection, url_id, section, func, *inputs)
+        scrape_section(get_connection, url_id, section, func, *inputs, verbose=verbose)

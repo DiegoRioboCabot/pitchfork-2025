@@ -17,7 +17,7 @@ def get_url_id(url:str, return_isnew:bool=False) -> Union[int, Tuple[bool, int]]
     """
     This function checks whether the provided `url` already has an assigned ID in 
     `g.urls_dict`. If not, it assigns a new unique ID and updates the dictionary. 
-    It ensures thread safety using `g.urls_lock`.
+    It ensures thread safety using `g.lock`.
 
     Args:
         url (str): 
@@ -34,7 +34,7 @@ def get_url_id(url:str, return_isnew:bool=False) -> Union[int, Tuple[bool, int]]
                 - `url_id (int)`: The unique ID assigned to the URL.
 
     Thread Safety:
-        - Uses `g.urls_lock` to ensure that updates to `g.urls_dict` and `g.urls_id_counter` 
+        - Uses `g.lock` to ensure that updates to `g.urls_dict` and `g.urls_id_counter` 
           are atomic and avoid race conditions in multithreaded environments.
 
     Example:
@@ -47,12 +47,15 @@ def get_url_id(url:str, return_isnew:bool=False) -> Union[int, Tuple[bool, int]]
         #          (True, 43) if it was newly assigned
         ```
     """
-    with g.urls_lock:
+    with g.lock:
         is_new = url not in g.urls_dict
         if is_new:
-            g.urls_dict[url] = g.urls_id_counter
+            url_id = g.urls_id_counter
+            g.urls_dict[url] = url_id
             g.urls_id_counter += 1
-        return (is_new, g.urls_dict[url]) if return_isnew else g.urls_dict[url]
+        else:
+            url_id = g.urls_dict[url]
+        return (is_new, url_id) if return_isnew else url_id
 
 def insert_failed_url(get_connection:SQLite3ConnectionGenerator, url_id:int, url:str) -> None:
     """
@@ -87,7 +90,8 @@ def parse_url(
     url: str, 
     num_retrys: int = 20, 
     timeout: float = 0.75, 
-    format: str = "xml") -> BeautifulSoup | None:
+    format: str = "xml",
+    ) -> BeautifulSoup | None:
     """
     This function attempts to retrieve a webpage using an HTTP GET request. If 
     the request fails, it retries up to `num_retrys` times with a delay of 
