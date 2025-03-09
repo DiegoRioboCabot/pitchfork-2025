@@ -136,14 +136,16 @@ def parse_url(
 
     is_new, url_id = get_url_id(url, return_isnew=True)
     
+    if is_new:
+        db.insert_named_tuple(URL(url_id, url))
+
+
     for _ in range(num_retrys):
         try:
             page = r.get(url, headers=header)
             if page.status_code == 200:
                 break
         except:
-            if is_new:
-                insert_failed_url(get_connection, url_id, url)
             message = traceback.format_exc()
             db.log_event(get_connection, url_id=url_id, process='Connection failed', success=0, message=message)
 

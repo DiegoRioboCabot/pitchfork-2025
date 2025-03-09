@@ -45,7 +45,7 @@ execute_multi_thread_func(multithread_scrape_year, list(range(1999, current_year
 query_review_album_urls = """
 SELECT url_id, url 
 FROM urls 
-WHERE is_review = 1 AND is_album = 1
+WHERE url LIKE '%/reviews/albums/%'
 """
 
 query_failed_urls = """
