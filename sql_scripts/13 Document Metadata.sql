@@ -76,9 +76,6 @@ INSERT INTO metadata VALUES ('review_keywords', 'score', NULL, NULL, 'Relevance 
 INSERT INTO metadata VALUES ('urls', NULL, NULL, NULL, 'Tracks every page URL scraped or found during scraping.');
 INSERT INTO metadata VALUES ('urls', 'url_id', 1, NULL, 'Primary key. Unique identifier for each URL.');
 INSERT INTO metadata VALUES ('urls', 'url', NULL, NULL, 'The full URL link.');
-INSERT INTO metadata VALUES ('urls', 'year', NULL, NULL, 'Year of the URL’s sitemap entry.');
-INSERT INTO metadata VALUES ('urls', 'month', NULL, NULL, 'Month of the URL’s sitemap entry.');
-INSERT INTO metadata VALUES ('urls', 'week', NULL, NULL, 'Week of the URL’s sitemap entry.');
 
 -- 📜 Scraping Events Log
 INSERT INTO metadata VALUES ('scraping_events', NULL, NULL, NULL, 'Tracks scraping activities and errors.');

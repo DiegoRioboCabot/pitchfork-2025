@@ -21,7 +21,7 @@ DB_TABLES = {
     'genres' : '(genre_id INTEGER, genre TEXT)',
     'keywords' : '(keyword_id INTEGER, keyword TEXT)',
     'labels' : '(label_id INTEGER, label TEXT)',
-    'urls' : '(url_id INTEGER, url TEXT, year INTEGER, month INTEGER, week INTEGER, is_review INTEGER, is_album INTEGER, is_author INTEGER, is_artist)',
+    'urls' : '(url_id INTEGER, url TEXT)',
     'albums' : '(album_id TEXT, album TEXT, publisher TEXT, release_year INTEGER, pitchfork_score INTEGER, is_best_new_music INTEGER, is_best_new_reissue INTEGER)',
     'artists' : '(artist_id INTEGER, artist TEXT, url_id TEXT)',
     'authors' : '(author_id TEXT, author TEXT, url_id TEXT)',
@@ -196,7 +196,7 @@ def __create_null_types(get_connection:SQLite3ConnectionGenerator) -> None:
         # I don't know if that's relevant or not (yet). But I might as well track it
         Author(0, 'Pitchfork_no_id', None), 
         Author('592604b17fd06e5349102f34', 'Pitchfork_with_id', None), 
-        URL(0, None, None, None, None, None, None, None, None)]
+        URL(0, None,)]
     insert_named_tuples(get_connection, null_types, log=True)
 
 def __initialize_globals(get_connection:SQLite3ConnectionGenerator) -> None:

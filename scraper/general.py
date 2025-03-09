@@ -83,7 +83,7 @@ def insert_failed_url(get_connection:SQLite3ConnectionGenerator, url_id:int, url
         insert_failed_url(get_connection, 123, "https://example.com/failure")
         ```
     """
-    db.insert_named_tuple(get_connection, URL(url_id, url, None, None, None, None, None, None, None))
+    db.insert_named_tuple(get_connection, URL(url_id, url))
 
 def parse_url(
     get_connection: SQLite3ConnectionGenerator, 

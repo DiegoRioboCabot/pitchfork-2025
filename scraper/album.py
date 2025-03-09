@@ -153,7 +153,7 @@ def scrape_review_data(
         review_data, new_labels, new_urls, review_labels = scrape_review_data(json_pl, json_ld)
         print(review_data)      # [Review(...)]
         print(new_labels)       # [Label(1, "Indie Rock"), Label(2, "Experimental")]
-        print(new_urls)         # [URL(123, "https://pitchfork.com/reviews/...", ...)]
+        print(new_urls)         # [URL(123, "https://pitchfork.com/reviews/)]
         print(review_labels)    # [Review_Labels(review_id=1, label_id=1), ...]
         ```
 
@@ -173,7 +173,7 @@ def scrape_review_data(
 
     is_new_url, url_id = general.get_url_id(review_url, return_isnew=True)
     if is_new_url:
-        new_urls.append(URL(url_id, review_url, None, None, 1, 1, 0, 0))
+        new_urls.append(URL(url_id, review_url))
 
     review = Review(
         review_id = general.dict_lookup(json_pl, ['coreDataLayer', 'content', 'contentId']),
@@ -228,7 +228,7 @@ def scrape_authors_data(json_pl:Dict[str,Any]) -> Tuple[List[Author], List[Label
         ```python
         new_authors, new_urls, review_authors = scrape_authors_data(json_pl)
         print(new_authors)  # [Author(author_id=123, name="John Doe", url_id=45), ...]
-        print(new_urls)     # [URL(url_id=45, "https://pitchfork.com/staff/john-doe", ...)]
+        print(new_urls)     # [URL(url_id=45, "https://pitchfork.com/staff/john-doe")]
         print(review_authors) # [Review_Authors(review_id=101, author_id=123), ...]
         ```
 
@@ -255,7 +255,7 @@ def scrape_authors_data(json_pl:Dict[str,Any]) -> Tuple[List[Author], List[Label
         author_url = f'https://pitchfork.com{authors_info2[i]["url"]}'
         is_new_url, url_id = general.get_url_id(author_url, return_isnew=True)
         if is_new_url:
-            new_urls.append(URL(url_id, author_url,None, None, None, 0, 0, 1, 0))
+            new_urls.append(URL(url_id, author_url))
 
         review_authors.append(Review_Authors(review_id, author_id))
         with g.lock:
@@ -443,7 +443,7 @@ def scrape_artists_data(json_pl:Dict[str,Any]
         artist_url = f'https://pitchfork.com/{a["uri"]}'
         is_new_url, url_id = general.get_url_id(artist_url, return_isnew=True)
         if is_new_url:
-            new_urls.append(URL(url_id, artist_url, None, None, None, 0, 0, 0, 1))
+            new_urls.append(URL(url_id, artist_url))
 
         new_artists.append(Artist(artist_id, artist_name, url_id))
         review_artists.append(Review_Artists(review_id, artist_id))

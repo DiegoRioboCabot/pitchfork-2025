@@ -2,7 +2,7 @@ DROP VIEW IF EXISTS Q_artists;
 
 CREATE VIEW Q_artists AS
 
-WITH artist_urls AS (SELECT url_id, url FROM urls WHERE is_artist = 1)
+WITH artist_urls AS (SELECT url_id, url FROM urls WHERE url LIKE '%/staff/%')
 
 SELECT 
    a.artist_id,

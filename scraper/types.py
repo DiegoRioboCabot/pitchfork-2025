@@ -15,7 +15,7 @@ namedtuples = ['URL', 'Label', 'Genre', 'Keyword', 'Entity', 'Artist', 'Album', 
 
 __all__ = namedtuples + ['SQLite3ConnectionGenerator', 'DatabaseRow']
 
-URL = namedtuple('urls', ['url_id', 'url', 'year', 'month', 'week', 'is_review', 'is_album', 'is_author', 'is_artist'])
+URL = namedtuple('urls', ['url_id', 'url',])
 
 Label = namedtuple('labels', ['label_id', 'label'])
 Genre = namedtuple('genres', ['genre_id', 'genre'])
