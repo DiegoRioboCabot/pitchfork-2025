@@ -52,11 +52,17 @@ query_failed_urls = """
 SELECT url_id, url
 FROM urls u 
 WHERE 
-   u.is_album = 1 AND
+   url LIKE '%/reviews/albums/%' AND
    u.url_id IN (
    SELECT se.url_id 
    FROM scraping_events se 
    WHERE process = "Couldn't stablish connection")
+"""
+
+query_author_bio_pages = """
+SELECT a.author_id, u.url_id, u.url
+FROM authors a
+JOIN urls u ON a.url_id = u.url_id
 """
 
 urls = pd.read_sql(query_review_album_urls, get_connection(), index_col='url_id')['url']
@@ -71,11 +77,6 @@ while len(failed_album_urls) and (retries > 0):
     retries -= 1
 
 #Scrape author's Biography page
-query_author_bio_pages = """
-SELECT a.author_id, u.url_id, u.url
-FROM authors a
-JOIN urls u ON a.url_id = u.url_id
-"""
 authors = pd.read_sql(query_author_bio_pages, get_connection(), index_col='author_id')
 execute_multi_thread_func(multithread_scrape_author, [(row.url_id, row.url, author_id) for author_id, row in authors.iterrows()])
 

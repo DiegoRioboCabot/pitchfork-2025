@@ -65,11 +65,11 @@ def get_weekly_urls_in_a_year(get_connection:SQLite3ConnectionGenerator, year:in
         return []
     return [url.text for url in soup.find_all('loc')]
 
-def get_urls_inside_a_weekly_url(get_connection:SQLite3ConnectionGenerator, weekly_url:str, timeout:float=0.5) -> URL:
+def get_urls_inside_a_weekly_url(get_connection:SQLite3ConnectionGenerator, weekly_url:str, timeout:float=0.5) -> None:
     """
     This function fetches a **weekly sitemap page** from Pitchfork, extracts 
     all URLs listed within it, and converts them into `URL` namedtuples 
-    with metadata such as year, month, and week.
+    that will be inserted into the database.
 
     Args:
         get_connection (SQLite3ConnectionGenerator): 
@@ -80,33 +80,20 @@ def get_urls_inside_a_weekly_url(get_connection:SQLite3ConnectionGenerator, week
             The timeout in seconds before retrying a failed request. 
             Defaults to `0.5`.
 
-    Returns:
-        List[URL]: 
-            A list of `URL` namedtuples, each containing:
-            - `url_id`: A unique ID for the URL.
-            - `url`: The extracted URL.
-            - `year, month, week`: Extracted from the sitemap URL.
-            - `is_review, is_album, is_author, is_artist`: Derived from URL attributes.
-
-    Example:
-        ```python
-        urls = get_urls_inside_a_weekly_url(get_connection, "https://pitchfork.com/sitemap.xml?year=2024&month=5&week=3")
-        print(urls)
-        # Example output: [URL(101, "https://pitchfork.com/reviews/album-name"), ...]
-        ```
+    Returns: None
 
     Notes:
         - Calls `general.parse_url()` to fetch and parse the sitemap.
-        - Uses `general.get_url_id()` to assign a unique ID to each extracted URL.
-        - If the request fails, the function returns an **empty list** instead of `None`.
+        - Uses `general.get_url_id()` to assign a unique ID to each extracted URL.s
     """
 
     soup = general.parse_url(get_connection, timeout=timeout, url=weekly_url)
     if not soup:
-        return []
+        return 
 
     urls_raw = [u.text for u in soup.find_all('loc')]
-    return [URL(general.get_url_id(u), u) for u in urls_raw]
+    urls = [URL(general.get_url_id(u), u) for u in urls_raw]
+    db.insert_named_tuples(get_connection, urls)
 
 def parse_album_url(get_connection:SQLite3ConnectionGenerator, url:str, timeout:float=0.5) -> URL:
         soup = general.parse_url(get_connection, timeout=timeout, url=url, format='html.parser')
@@ -148,10 +135,9 @@ def scrape_sitemap_year(get_connection:SQLite3ConnectionGenerator, year:int, tim
         Exception: Any unexpected error is caught and logged.
     """
 
-    urls = []
     try:
         for weekly_url in get_weekly_urls_in_a_year(get_connection, year, timeout=timeout):
-            urls += get_urls_inside_a_weekly_url(get_connection, weekly_url, timeout=timeout)
+            get_urls_inside_a_weekly_url(get_connection, weekly_url, timeout=timeout)
     except Exception as e:
         message = traceback.format_exc()
         db.log_event(get_connection, process=f"Error scraping year {year}", success=0, message=message)

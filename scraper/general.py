@@ -137,7 +137,7 @@ def parse_url(
     is_new, url_id = get_url_id(url, return_isnew=True)
     
     if is_new:
-        db.insert_named_tuple(URL(url_id, url))
+        db.insert_named_tuple(get_connection, URL(url_id, url))
 
 
     for _ in range(num_retrys):
@@ -148,7 +148,6 @@ def parse_url(
         except:
             message = traceback.format_exc()
             db.log_event(get_connection, url_id=url_id, process='Connection failed', success=0, message=message)
-
             time.sleep(timeout)
 
     if page is None or page.status_code != 200:
